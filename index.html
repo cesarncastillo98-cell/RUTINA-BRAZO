@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Rutina de Brazos</title>
+<style>
+:root{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--green:#39FF14;--gdim:rgba(57,255,20,0.12);--white:#f0f0f0;--gray:#666;--gray2:#2a2a2a;--gray3:#333;--orange:#FF8C00;--red:#FF3B3B;--blue:#4A9EFF;--purple:#BF7FFF;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;min-height:100vh;padding-bottom:60px;}
+
+.nav-tabs{display:flex;background:#111;border-bottom:1px solid var(--gray2);position:sticky;top:0;z-index:200;}
+.nav-tab{flex:1;padding:14px 8px 12px;text-align:center;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;}
+.nav-tab.active{color:var(--green);border-bottom-color:var(--green);}
+.nav-tab .ti{font-size:18px;display:block;margin-bottom:2px;}
+.view{display:none;}.view.active{display:block;}
+
+.header{padding:20px 20px 16px;background:linear-gradient(180deg,#111 0%,var(--bg) 100%);border-bottom:1px solid var(--gray2);}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.title{font-size:24px;font-weight:700;letter-spacing:-0.5px;line-height:1.1;}
+.title span{color:var(--green);}
+.reset-btn{background:var(--gray2);color:var(--gray);border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-family:inherit;cursor:pointer;}
+.progress-wrap{display:flex;align-items:center;gap:10px;}
+.progress-bar-bg{flex:1;height:4px;background:var(--gray2);border-radius:2px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:var(--green);border-radius:2px;transition:width 0.3s;box-shadow:0 0 8px var(--green);}
+.progress-label{font-size:12px;color:var(--green);font-weight:600;min-width:36px;text-align:right;}
+
+.content{padding:0 16px;margin-top:16px;}
+.block{margin-bottom:20px;border-radius:16px;overflow:hidden;border:1px solid var(--gray2);}
+.block-header{padding:13px 16px 11px;display:flex;align-items:center;gap:10px;}
+.block-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.b1 .block-num{background:rgba(255,59,59,0.2);color:var(--red);}
+.b2 .block-num{background:rgba(74,158,255,0.2);color:var(--blue);}
+.b3 .block-num{background:rgba(255,140,0,0.2);color:var(--orange);}
+.b4 .block-num{background:var(--gdim);color:var(--green);}
+.block-info{flex:1;}
+.block-title{font-size:14px;font-weight:700;margin-bottom:2px;}
+.block-subtitle{font-size:10px;color:var(--gray);}
+.block-progress{font-size:11px;font-weight:600;color:var(--green);min-width:36px;text-align:right;}
+
+.exercise{border-top:1px solid var(--gray2);padding:0 16px;background:var(--card);}
+.exercise-header{padding:11px 0 8px;}
+.exercise-tag{display:inline-block;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:600;margin-bottom:4px;}
+.tag-cal{background:rgba(255,140,0,0.15);color:var(--orange);}
+.tag-manc{background:rgba(74,158,255,0.15);color:var(--blue);}
+.exercise-name{font-size:14px;font-weight:600;margin-bottom:2px;letter-spacing:-0.2px;}
+.muscle-badge{font-size:10px;color:var(--gray);font-style:italic;}
+
+.weight-row{display:flex;align-items:center;gap:8px;margin:6px 0 8px;}
+.weight-label{font-size:11px;color:var(--gray);flex-shrink:0;}
+.weight-select{background:var(--card2);border:1.5px solid var(--gray2);border-radius:10px;color:var(--white);font-family:inherit;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;appearance:none;-webkit-appearance:none;cursor:pointer;min-width:90px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+.weight-select.set{border-color:var(--green);color:var(--green);background-color:var(--gdim);}
+
+.note-toggle{background:none;border:none;color:var(--gray);font-size:11px;cursor:pointer;padding:3px 0;font-family:inherit;}
+.note-body{display:none;background:var(--card2);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--gray);line-height:1.6;margin:4px 0 8px;border-left:2px solid var(--green);}
+.note-body.open{display:block;}
+
+.rest-pill{display:inline-flex;align-items:center;gap:4px;background:var(--gray2);border-radius:8px;padding:3px 8px;font-size:10px;color:var(--gray);margin-bottom:10px;}
+.series-row{display:flex;gap:8px;padding-bottom:14px;flex-wrap:wrap;}
+.serie-btn{width:48px;height:48px;border-radius:12px;border:1.5px solid var(--gray2);background:var(--card2);color:var(--gray);font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;-webkit-user-select:none;user-select:none;}
+.serie-btn .s-num{font-size:13px;font-weight:700;color:var(--white);opacity:0.4;line-height:1;}
+.serie-btn .s-label{font-size:9px;color:var(--gray);line-height:1;}
+.serie-btn.done{background:var(--gdim);border-color:var(--green);box-shadow:0 0 10px rgba(57,255,20,0.2);}
+.serie-btn.done .s-num{color:var(--green);opacity:1;}
+.serie-btn.done .s-label{color:var(--green);opacity:0.7;}
+.serie-btn:active{transform:scale(0.92);}
+
+.superset-header{background:var(--card2);border-top:1px solid var(--gray2);padding:8px 16px 6px;display:flex;align-items:center;gap:8px;}
+.superset-tag{background:var(--gdim);color:var(--green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;border:1px solid rgba(57,255,20,0.3);}
+.superset-label{font-size:11px;color:var(--gray);}
+.done-banner{display:none;text-align:center;padding:10px;background:var(--gdim);border-top:1px solid rgba(57,255,20,0.2);font-size:12px;color:var(--green);font-weight:600;}
+.block.all-done .done-banner{display:block;}
+
+.finish-section{display:none;margin:12px 16px 0;border-radius:16px;background:var(--gdim);border:1px solid rgba(57,255,20,0.3);padding:20px;text-align:center;}
+.finish-section.visible{display:block;}
+.finish-emoji{font-size:36px;margin-bottom:8px;}
+.finish-title{font-size:18px;font-weight:700;color:var(--green);margin-bottom:4px;}
+.finish-sub{font-size:12px;color:var(--gray);line-height:1.5;}
+
+.save-section{margin:16px 16px 0;border-radius:16px;background:var(--card);border:1px solid var(--gray2);padding:18px;}
+.save-title{font-size:14px;font-weight:700;margin-bottom:14px;}
+.rpe-label{font-size:11px;color:var(--gray);margin-bottom:8px;display:flex;justify-content:space-between;}
+.rpe-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.rpe-btn{width:38px;height:38px;border-radius:10px;border:1.5px solid var(--gray2);background:var(--card2);color:var(--gray);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.rpe-btn.sel{border-color:var(--purple);background:rgba(191,127,255,0.15);color:var(--purple);}
+.notes-label{font-size:11px;color:var(--gray);margin-bottom:6px;}
+.notes-input{width:100%;background:var(--card2);border:1.5px solid var(--gray2);border-radius:10px;color:var(--white);font-family:inherit;font-size:13px;padding:10px 12px;resize:none;min-height:70px;}
+.notes-input:focus{outline:none;border-color:var(--green);}
+.save-btn{width:100%;margin-top:14px;background:var(--green);color:#000;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;}
+.save-btn:active{opacity:0.85;transform:scale(0.98);}
+
+/* HISTORIAL */
+.hist-header{padding:20px 16px 12px;border-bottom:1px solid var(--gray2);display:flex;justify-content:space-between;align-items:center;}
+.hist-title{font-size:20px;font-weight:700;}
+.hist-title span{color:var(--green);}
+.hist-actions{display:flex;gap:8px;}
+.hist-btn{background:none;border:1px solid var(--gray2);border-radius:8px;color:var(--gray);font-size:11px;font-family:inherit;padding:5px 10px;cursor:pointer;}
+.hist-btn.import{border-color:rgba(57,255,20,0.4);color:var(--green);}
+.hist-empty{text-align:center;padding:60px 20px;color:var(--gray);font-size:14px;}
+.hist-empty .big{font-size:40px;margin-bottom:12px;}
+
+.session-card{margin:12px 16px 0;border-radius:14px;background:var(--card);border:1px solid var(--gray2);overflow:hidden;}
+.session-head{padding:14px 16px 10px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;}
+.session-date{font-size:14px;font-weight:700;}
+.session-meta{font-size:11px;color:var(--gray);margin-top:3px;}
+.session-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;}
+.sbadge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;}
+.sbadge.green{background:var(--gdim);color:var(--green);}
+.sbadge.red{background:rgba(255,59,59,0.12);color:var(--red);}
+.sbadge.purple{background:rgba(191,127,255,0.15);color:var(--purple);}
+.sbadge.gray{background:var(--gray2);color:var(--gray);}
+.chevron{color:var(--gray);font-size:14px;flex-shrink:0;transition:transform 0.2s;}
+.chevron.open{transform:rotate(90deg);}
+.session-detail{display:none;border-top:1px solid var(--gray2);}
+.session-detail.open{display:block;}
+.detail-row{padding:10px 16px;border-bottom:1px solid var(--gray2);display:flex;justify-content:space-between;align-items:center;}
+.detail-row:last-child{border-bottom:none;}
+.detail-name{font-size:12px;flex:1;}
+.detail-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.detail-notes{padding:10px 16px 14px;font-size:12px;color:var(--gray);line-height:1.6;border-top:1px solid var(--gray2);}
+.detail-notes strong{color:var(--white);}
+.delete-session-btn{width:calc(100% - 32px);margin:0 16px 14px;background:none;border:1px solid rgba(255,59,59,0.3);border-radius:10px;color:var(--red);font-family:inherit;font-size:12px;padding:8px;cursor:pointer;}
+
+/* EXPORT/IMPORT */
+.export-box{margin:12px 16px 0;border-radius:14px;background:var(--card);border:1px solid var(--gray2);padding:16px;}
+.export-title{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--green);}
+.export-text{width:100%;background:var(--card2);border:1px solid var(--gray2);border-radius:10px;color:var(--white);font-family:monospace;font-size:10px;padding:10px;resize:none;min-height:100px;margin-bottom:10px;}
+.copy-btn{width:100%;background:var(--green);color:#000;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:8px;}
+.import-title{font-size:13px;font-weight:700;margin:14px 0 8px;color:var(--purple);}
+.import-text{width:100%;background:var(--card2);border:1px solid var(--gray2);border-radius:10px;color:var(--white);font-family:monospace;font-size:10px;padding:10px;resize:none;min-height:80px;margin-bottom:8px;}
+.import-btn{width:100%;background:rgba(191,127,255,0.2);color:var(--purple);border:1px solid var(--purple);border-radius:10px;padding:11px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;}
+
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#000;font-weight:700;font-size:13px;padding:10px 20px;border-radius:20px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}
+.pop{animation:pop 0.2s ease;}
+</style>
+</head>
+<body>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="switchView('rutina')"><span class="ti">💪</span>Rutina</div>
+  <div class="nav-tab" onclick="switchView('historial')"><span class="ti">📊</span>Historial</div>
+  <div class="nav-tab" onclick="switchView('datos')"><span class="ti">💾</span>Datos</div>
+</div>
+
+<!-- ══ RUTINA ══ -->
+<div class="view active" id="view-rutina">
+<div class="header">
+  <div class="header-top">
+    <div class="title">Rutina<br><span>Brazos</span></div>
+    <button class="reset-btn" onclick="resetAll()">↺ Reiniciar</button>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="global-bar" style="width:0%"></div></div>
+    <div class="progress-label" id="global-label">0%</div>
+  </div>
+</div>
+<div class="content">
+
+<!-- B1 -->
+<div class="block b1" id="block-0">
+  <div class="block-header">
+    <div class="block-num">1</div>
+    <div class="block-info"><div class="block-title">Fuerza Base</div><div class="block-subtitle">Peso máximo · forma perfecta · 2 min descanso</div></div>
+    <div class="block-progress" id="bp-0">0/8</div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-cal">Calistenia</div>
+      <div class="exercise-name">Bench Dip con silla</div>
+      <div class="muscle-badge">Tríceps · 4 series × 10–12 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Manos en el borde de la silla detrás. Cuerpo erguido, codos apuntando atrás. Baja a 90° y sube sin bloquear.</div>
+    </div>
+    <div class="rest-pill">⏱ 90 seg descanso</div>
+    <div class="series-row" id="ex-0">
+      <button class="serie-btn" onclick="toggleSerie(this,0)"><span class="s-num">1</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,0)"><span class="s-num">2</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,0)"><span class="s-num">3</span><span class="s-label">×10</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,0)"><span class="s-num">4</span><span class="s-label">×10</span></button>
+    </div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-manc">Mancuernas</div>
+      <div class="exercise-name">Curl de Bíceps Alterno</div>
+      <div class="muscle-badge">Bíceps · 4 series × 10–12 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Supinación completa al subir. Bajada lenta 3 seg. Sin balancear el torso. Codos pegados.</div>
+    </div>
+    <div class="weight-row">
+      <span class="weight-label">🏋️ Peso:</span>
+      <select class="weight-select" data-ex="Curl Bíceps Alterno" onchange="onWeightChange(this)">
+        <option value="">— lbs —</option><option>5 lbs</option><option>10 lbs</option><option>15 lbs</option><option>20 lbs</option><option>25 lbs</option><option>30 lbs</option>
+      </select>
+    </div>
+    <div class="rest-pill">⏱ 90 seg descanso</div>
+    <div class="series-row" id="ex-1">
+      <button class="serie-btn" onclick="toggleSerie(this,0)"><span class="s-num">1</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,0)"><span class="s-num">2</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,0)"><span class="s-num">3</span><span class="s-label">×10</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,0)"><span class="s-num">4</span><span class="s-label">×10</span></button>
+    </div>
+  </div>
+  <div class="done-banner">✓ Bloque 1 completado</div>
+</div>
+
+<!-- B2 -->
+<div class="block b2" id="block-1">
+  <div class="block-header">
+    <div class="block-num">2</div>
+    <div class="block-info"><div class="block-title">Volumen</div><div class="block-subtitle">Peso moderado-alto · bajada controlada · 75 seg</div></div>
+    <div class="block-progress" id="bp-1">0/16</div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-cal">Calistenia</div>
+      <div class="exercise-name">Diamond Push-ups</div>
+      <div class="muscle-badge">Tríceps · 4 series × 12–15 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Manos en triángulo bajo el pecho. Codos apuntan atrás. Pausa 1 seg abajo, sube explosivo.</div>
+    </div>
+    <div class="rest-pill">⏱ 75 seg descanso</div>
+    <div class="series-row" id="ex-2">
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">1</span><span class="s-label">×15</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">2</span><span class="s-label">×15</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">3</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">4</span><span class="s-label">×12</span></button>
+    </div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-manc">Mancuernas</div>
+      <div class="exercise-name">Extensión Copa sobre Cabeza</div>
+      <div class="muscle-badge">Tríceps cabeza larga · 4 series × 10–12 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Dos manos en una mancuerna. Codos pegados al techo. Baja hasta el cuello, rango completo.</div>
+    </div>
+    <div class="weight-row">
+      <span class="weight-label">🏋️ Peso:</span>
+      <select class="weight-select" data-ex="Extensión Copa" onchange="onWeightChange(this)">
+        <option value="">— lbs —</option><option>5 lbs</option><option>10 lbs</option><option>15 lbs</option><option>20 lbs</option><option>25 lbs</option><option>30 lbs</option>
+      </select>
+    </div>
+    <div class="rest-pill">⏱ 75 seg descanso</div>
+    <div class="series-row" id="ex-3">
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">1</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">2</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">3</span><span class="s-label">×10</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">4</span><span class="s-label">×10</span></button>
+    </div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-manc">Mancuernas</div>
+      <div class="exercise-name">Curl Martillo</div>
+      <div class="muscle-badge">Braquial / Bíceps · 3 series × 12 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Muñeca neutra (pulgar arriba) todo el recorrido. Da grosor al brazo.</div>
+    </div>
+    <div class="weight-row">
+      <span class="weight-label">🏋️ Peso:</span>
+      <select class="weight-select" data-ex="Curl Martillo" onchange="onWeightChange(this)">
+        <option value="">— lbs —</option><option>5 lbs</option><option>10 lbs</option><option>15 lbs</option><option>20 lbs</option><option>25 lbs</option><option>30 lbs</option>
+      </select>
+    </div>
+    <div class="rest-pill">⏱ 60 seg descanso</div>
+    <div class="series-row" id="ex-4">
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">1</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">2</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">3</span><span class="s-label">×12</span></button>
+    </div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-manc">Mancuernas</div>
+      <div class="exercise-name">Skull Crusher en el suelo</div>
+      <div class="muscle-badge">Tríceps · 3 series × 10–12 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Acostado, brazos al techo. Codos fijos. Baja hacia las sienes 3 seg, sube sin bloquear.</div>
+    </div>
+    <div class="weight-row">
+      <span class="weight-label">🏋️ Peso:</span>
+      <select class="weight-select" data-ex="Skull Crusher" onchange="onWeightChange(this)">
+        <option value="">— lbs —</option><option>5 lbs</option><option>10 lbs</option><option>15 lbs</option><option>20 lbs</option><option>25 lbs</option><option>30 lbs</option>
+      </select>
+    </div>
+    <div class="rest-pill">⏱ 75 seg descanso</div>
+    <div class="series-row" id="ex-5">
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">1</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">2</span><span class="s-label">×10</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,1)"><span class="s-num">3</span><span class="s-label">×10</span></button>
+    </div>
+  </div>
+  <div class="done-banner">✓ Bloque 2 completado</div>
+</div>
+
+<!-- B3 -->
+<div class="block b3" id="block-2">
+  <div class="block-header">
+    <div class="block-num">3</div>
+    <div class="block-info"><div class="block-title">Aislamiento</div><div class="block-subtitle">Peso ligero · máxima contracción · 60 seg</div></div>
+    <div class="block-progress" id="bp-2">0/9</div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-manc">Mancuernas</div>
+      <div class="exercise-name">Curl Concentrado</div>
+      <div class="muscle-badge">Pico del bíceps · 3 series × 12–15 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Codo apoyado en muslo interno. Hombro fijo. Supinación completa, aprieta 1 seg arriba.</div>
+    </div>
+    <div class="weight-row">
+      <span class="weight-label">🏋️ Peso:</span>
+      <select class="weight-select" data-ex="Curl Concentrado" onchange="onWeightChange(this)">
+        <option value="">— lbs —</option><option>5 lbs</option><option>10 lbs</option><option>15 lbs</option><option>20 lbs</option><option>25 lbs</option><option>30 lbs</option>
+      </select>
+    </div>
+    <div class="rest-pill">⏱ 60 seg descanso</div>
+    <div class="series-row" id="ex-6">
+      <button class="serie-btn" onclick="toggleSerie(this,2)"><span class="s-num">1</span><span class="s-label">×15</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,2)"><span class="s-num">2</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,2)"><span class="s-num">3</span><span class="s-label">×12</span></button>
+    </div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-manc">Mancuernas</div>
+      <div class="exercise-name">Patada de Tríceps</div>
+      <div class="muscle-badge">Tríceps lateral · 3 series × 12–15 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Inclinado 45°, codo fijo a 90°. Extiende completamente. Pausa 1 seg. Solo mueve el antebrazo.</div>
+    </div>
+    <div class="weight-row">
+      <span class="weight-label">🏋️ Peso:</span>
+      <select class="weight-select" data-ex="Patada Tríceps" onchange="onWeightChange(this)">
+        <option value="">— lbs —</option><option>5 lbs</option><option>10 lbs</option><option>15 lbs</option><option>20 lbs</option><option>25 lbs</option><option>30 lbs</option>
+      </select>
+    </div>
+    <div class="rest-pill">⏱ 60 seg descanso</div>
+    <div class="series-row" id="ex-7">
+      <button class="serie-btn" onclick="toggleSerie(this,2)"><span class="s-num">1</span><span class="s-label">×15</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,2)"><span class="s-num">2</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,2)"><span class="s-num">3</span><span class="s-label">×12</span></button>
+    </div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-manc">Mancuernas</div>
+      <div class="exercise-name">Curl Inclinado</div>
+      <div class="muscle-badge">Bíceps cabeza larga · 3 series × 12 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Silla reclinada ~45°, brazos colgando atrás del plano corporal. Sube sin mover hombros.</div>
+    </div>
+    <div class="weight-row">
+      <span class="weight-label">🏋️ Peso:</span>
+      <select class="weight-select" data-ex="Curl Inclinado" onchange="onWeightChange(this)">
+        <option value="">— lbs —</option><option>5 lbs</option><option>10 lbs</option><option>15 lbs</option><option>20 lbs</option><option>25 lbs</option><option>30 lbs</option>
+      </select>
+    </div>
+    <div class="rest-pill">⏱ 60 seg descanso</div>
+    <div class="series-row" id="ex-8">
+      <button class="serie-btn" onclick="toggleSerie(this,2)"><span class="s-num">1</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,2)"><span class="s-num">2</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,2)"><span class="s-num">3</span><span class="s-label">×12</span></button>
+    </div>
+  </div>
+  <div class="done-banner">✓ Bloque 3 completado</div>
+</div>
+
+<!-- B4 -->
+<div class="block b4" id="block-3">
+  <div class="block-header">
+    <div class="block-num">4</div>
+    <div class="block-info"><div class="block-title">Quemada Final</div><div class="block-subtitle">Supersets · sin descanso A→B · 90 seg entre rondas</div></div>
+    <div class="block-progress" id="bp-3">0/10</div>
+  </div>
+  <div class="superset-header"><div class="superset-tag">SUPERSET A</div><div class="superset-label">3 rondas · A → B sin parar</div></div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-cal">Calistenia</div>
+      <div class="exercise-name">A1 · Triceps Push-ups</div>
+      <div class="muscle-badge">Tríceps · 3 rondas × 15 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Codos pegados al cuerpo, deslizándose hacia atrás. Los codos rozan las costillas.</div>
+    </div>
+    <div class="series-row" id="ex-9">
+      <button class="serie-btn" onclick="toggleSerie(this,3)"><span class="s-num">R1</span><span class="s-label">×15</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,3)"><span class="s-num">R2</span><span class="s-label">×15</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,3)"><span class="s-num">R3</span><span class="s-label">×15</span></button>
+    </div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-manc">Mancuernas</div>
+      <div class="exercise-name">A2 · Curl 21s</div>
+      <div class="muscle-badge">Bíceps completo · 3 rondas</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Peso ligero. 7 mitad inferior → 7 mitad superior → 7 completas. Sin pausa entre segmentos.</div>
+    </div>
+    <div class="weight-row">
+      <span class="weight-label">🏋️ Peso:</span>
+      <select class="weight-select" data-ex="Curl 21s" onchange="onWeightChange(this)">
+        <option value="">— lbs —</option><option>5 lbs</option><option>10 lbs</option><option>15 lbs</option><option>20 lbs</option><option>25 lbs</option><option>30 lbs</option>
+      </select>
+    </div>
+    <div class="series-row" id="ex-10">
+      <button class="serie-btn" onclick="toggleSerie(this,3)"><span class="s-num">R1</span><span class="s-label">×21</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,3)"><span class="s-num">R2</span><span class="s-label">×21</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,3)"><span class="s-num">R3</span><span class="s-label">×21</span></button>
+    </div>
+  </div>
+  <div class="superset-header"><div class="superset-tag">SUPERSET B</div><div class="superset-label">2 rondas · A → B sin parar</div></div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-cal">Calistenia</div>
+      <div class="exercise-name">B1 · Pike Push-up Tríceps</div>
+      <div class="muscle-badge">Tríceps · 2 rondas × 12 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Cuerpo en V invertida. Baja la cabeza entre las manos llevando codos hacia atrás.</div>
+    </div>
+    <div class="series-row" id="ex-11">
+      <button class="serie-btn" onclick="toggleSerie(this,3)"><span class="s-num">R1</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,3)"><span class="s-num">R2</span><span class="s-label">×12</span></button>
+    </div>
+  </div>
+  <div class="exercise">
+    <div class="exercise-header">
+      <div class="exercise-tag tag-manc">Mancuernas</div>
+      <div class="exercise-name">B2 · Reverse Curl</div>
+      <div class="muscle-badge">Antebrazo extensor · 2 rondas × 12 reps</div>
+      <button class="note-toggle" onclick="toggleNote(this)">▸ Técnica</button>
+      <div class="note-body">Agarre pronado (palmas hacia abajo). Usa menos peso que el curl normal.</div>
+    </div>
+    <div class="weight-row">
+      <span class="weight-label">🏋️ Peso:</span>
+      <select class="weight-select" data-ex="Reverse Curl" onchange="onWeightChange(this)">
+        <option value="">— lbs —</option><option>5 lbs</option><option>10 lbs</option><option>15 lbs</option><option>20 lbs</option><option>25 lbs</option><option>30 lbs</option>
+      </select>
+    </div>
+    <div class="series-row" id="ex-12">
+      <button class="serie-btn" onclick="toggleSerie(this,3)"><span class="s-num">R1</span><span class="s-label">×12</span></button>
+      <button class="serie-btn" onclick="toggleSerie(this,3)"><span class="s-num">R2</span><span class="s-label">×12</span></button>
+    </div>
+  </div>
+  <div class="done-banner">✓ Bloque 4 completado</div>
+</div>
+
+<div class="finish-section" id="finish">
+  <div class="finish-emoji">💪</div>
+  <div class="finish-title">¡Rutina completada!</div>
+  <div class="finish-sub">Come tus 70g de proteína post-entreno<br>antes de entrar a MODO.</div>
+</div>
+
+<!-- GUARDAR -->
+<div class="save-section">
+  <div class="save-title">Guardar sesión</div>
+  <div class="rpe-label"><span>RPE · Esfuerzo percibido</span><span style="color:var(--purple)" id="rpe-desc">— selecciona —</span></div>
+  <div class="rpe-row">
+    <button class="rpe-btn" onclick="setRPE(this,1)">1</button><button class="rpe-btn" onclick="setRPE(this,2)">2</button>
+    <button class="rpe-btn" onclick="setRPE(this,3)">3</button><button class="rpe-btn" onclick="setRPE(this,4)">4</button>
+    <button class="rpe-btn" onclick="setRPE(this,5)">5</button><button class="rpe-btn" onclick="setRPE(this,6)">6</button>
+    <button class="rpe-btn" onclick="setRPE(this,7)">7</button><button class="rpe-btn" onclick="setRPE(this,8)">8</button>
+    <button class="rpe-btn" onclick="setRPE(this,9)">9</button><button class="rpe-btn" onclick="setRPE(this,10)">10</button>
+  </div>
+  <div class="notes-label">Notas de la sesión</div>
+  <textarea class="notes-input" id="session-notes" placeholder="Cómo te sentiste, qué mejorar, lesiones, energía..."></textarea>
+  <button class="save-btn" onclick="saveSession()">Guardar sesión 💾</button>
+</div>
+
+</div><!-- /content -->
+</div><!-- /view-rutina -->
+
+<!-- ══ HISTORIAL ══ -->
+<div class="view" id="view-historial">
+  <div class="hist-header">
+    <div class="hist-title">Historial <span>Brazos</span></div>
+    <div class="hist-actions">
+      <button class="hist-btn" onclick="clearHistory()">Borrar todo</button>
+    </div>
+  </div>
+  <div id="hist-content"></div>
+</div>
+
+<!-- ══ DATOS ══ -->
+<div class="view" id="view-datos">
+  <div class="hist-header">
+    <div class="hist-title">💾 <span>Datos</span></div>
+  </div>
+  <div style="padding:16px;font-size:12px;color:var(--gray);line-height:1.7;background:var(--card);margin:12px 16px;border-radius:14px;border:1px solid var(--gray2);">
+    <strong style="color:var(--white);display:block;margin-bottom:6px;">¿Cómo funciona el guardado?</strong>
+    Al guardar una sesión se genera un texto compacto. <strong style="color:var(--green)">Cópialo y pégalo en tus Notas de iPhone</strong> para tener historial permanente. Para ver sesiones anteriores, pégalas en el campo de importar.
+  </div>
+  <div class="export-box">
+    <div class="export-title">📤 Exportar historial</div>
+    <textarea class="export-text" id="export-area" readonly placeholder="Aquí aparecerá tu historial cuando guardes sesiones..."></textarea>
+    <button class="copy-btn" onclick="copyExport()">📋 Copiar — pegar en Notas de iPhone</button>
+    <div class="import-title">📥 Importar sesiones guardadas</div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:8px;">Pega aquí el texto que copiaste de Notas de iPhone</div>
+    <textarea class="import-text" id="import-area" placeholder="Pega aquí el historial copiado..."></textarea>
+    <button class="import-btn" onclick="importSessions()">Importar sesiones</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const blockTotals=[8,16,9,10];
+const blockDone=[0,0,0,0];
+let currentRPE=null;
+let sessions=[];
+
+const RPE_LABELS={1:'Muy fácil',2:'Fácil',3:'Moderado ligero',4:'Moderado',5:'Algo difícil',6:'Difícil',7:'Muy difícil',8:'Muy duro',9:'Máximo casi',10:'Esfuerzo máximo'};
+
+function switchView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  const idx={rutina:0,historial:1,datos:2}[v];
+  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  if(v==='historial') renderHistory();
+  if(v==='datos') renderExport();
+}
+
+function toggleSerie(btn,blockIdx){
+  const wasDone=btn.classList.contains('done');
+  if(wasDone){btn.classList.remove('done');blockDone[blockIdx]=Math.max(0,blockDone[blockIdx]-1);}
+  else{btn.classList.add('done');btn.classList.add('pop');setTimeout(()=>btn.classList.remove('pop'),200);blockDone[blockIdx]++;}
+  updateBlock(blockIdx);updateGlobal();
+}
+function updateBlock(idx){
+  const done=blockDone[idx],total=blockTotals[idx];
+  document.getElementById('bp-'+idx).textContent=done+'/'+total;
+  document.getElementById('block-'+idx).classList.toggle('all-done',done>=total);
+}
+function updateGlobal(){
+  const done=blockDone.reduce((a,b)=>a+b,0),total=blockTotals.reduce((a,b)=>a+b,0);
+  const pct=Math.round((done/total)*100);
+  document.getElementById('global-bar').style.width=pct+'%';
+  document.getElementById('global-label').textContent=pct+'%';
+  if(done>=total){document.getElementById('finish').classList.add('visible');document.getElementById('finish').scrollIntoView({behavior:'smooth',block:'center'});}
+  else document.getElementById('finish').classList.remove('visible');
+}
+function onWeightChange(sel){sel.classList.toggle('set',!!sel.value);}
+function setRPE(btn,val){
+  document.querySelectorAll('.rpe-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');currentRPE=val;
+  document.getElementById('rpe-desc').textContent=val+'/10 · '+RPE_LABELS[val];
+}
+function toggleNote(btn){
+  const note=btn.nextElementSibling;
+  const open=note.classList.toggle('open');
+  btn.textContent=(open?'▾ ':'▸ ')+'Técnica';
+}
+
+function saveSession(){
+  const totalDone=blockDone.reduce((a,b)=>a+b,0);
+  const totalAll=blockTotals.reduce((a,b)=>a+b,0);
+  const exercises={};
+  document.querySelectorAll('.weight-select').forEach(sel=>{if(sel.value&&sel.dataset.ex)exercises[sel.dataset.ex]=sel.value;});
+  const s={
+    id:Date.now(),
+    date:new Date().toLocaleDateString('es-MX',{weekday:'short',year:'numeric',month:'short',day:'numeric'}),
+    totalDone,totalAll,
+    pct:Math.round((totalDone/totalAll)*100),
+    rpe:currentRPE,
+    notes:document.getElementById('session-notes').value.trim(),
+    exercises
+  };
+  sessions.push(s);
+  showToast('✓ Sesión guardada — ve a Datos para copiarla');
+}
+
+function renderHistory(){
+  const cont=document.getElementById('hist-content');
+  if(!sessions.length){cont.innerHTML='<div class="hist-empty"><div class="big">📋</div>Aún no hay sesiones.<br>Guarda tu primera rutina y<br>cópiala en la pestaña Datos.</div>';return;}
+  cont.innerHTML=[...sessions].reverse().map(s=>{
+    const exRows=Object.entries(s.exercises||{}).map(([name,w])=>{
+      const sIdx=sessions.findIndex(x=>x.id===s.id);
+      const prev=sessions.slice(0,sIdx).reverse().find(x=>x.exercises&&x.exercises[name]);
+      let badge='';
+      if(prev&&prev.exercises[name]){
+        const c=parseInt(w),p=parseInt(prev.exercises[name]);
+        if(c>p)badge='<span class="sbadge green">▲' + w + '</span>';
+        else if(c<p)badge='<span class="sbadge red">▼' + w + '</span>';
+        else badge='<span class="sbadge gray">=' + w + '</span>';
+      }else badge='<span class="sbadge gray">' + w + '</span>';
+      return '<div class="detail-row"><div class="detail-name">' + name + '</div><div class="detail-right">' + badge + '</div></div>';
+    }).join('');
+    const rpeHtml=s.rpe?'<span class="sbadge purple">RPE ' + s.rpe + '/10</span>':'';
+    const col=s.pct>=80?'green':s.pct>=50?'gray':'red';
+    const notesHtml=s.notes?'<div class="detail-notes"><strong>Notas:</strong> ' + s.notes + '</div>':'';
+    var card='<div class="session-card" id="sc-' + s.id + '">';
+    card+='<div class="session-head" onclick="toggleDetail(' + s.id + ')">';
+    card+='<div>';
+    card+='<div class="session-date">' + s.date + '</div>';
+    card+='<div class="session-meta">' + s.totalDone + '/' + s.totalAll + ' series completadas</div>';
+    card+='<div class="session-badges" style="margin-top:6px"><span class="sbadge ' + col + '">' + s.pct + '%</span>' + rpeHtml + '</div>';
+    card+='</div>';
+    card+='<div class="chevron" id="chev-' + s.id + '">›</div>';
+    card+='</div>';
+    card+='<div class="session-detail" id="det-' + s.id + '">' + exRows + notesHtml;
+    card+='<button class="delete-session-btn" onclick="deleteSession(' + s.id + ')">Eliminar sesión</button>';
+    card+='</div></div>';
+    return card;
+  }).join('');
+}
+
+function toggleDetail(id){
+  const det=document.getElementById('det-'+id);
+  const chev=document.getElementById('chev-'+id);
+  const open=det.classList.toggle('open');
+  chev.classList.toggle('open',open);
+}
+function deleteSession(id){
+  if(!confirm('¿Eliminar esta sesión?'))return;
+  sessions=sessions.filter(s=>s.id!==id);
+  renderHistory();showToast('Sesión eliminada');
+}
+function clearHistory(){
+  if(!confirm('¿Borrar todo el historial en pantalla?'))return;
+  sessions=[];renderHistory();showToast('Historial borrado');
+}
+
+function renderExport(){
+  const area=document.getElementById('export-area');
+  if(!sessions.length){area.value='';area.placeholder='Aquí aparecerá tu historial cuando guardes sesiones...';return;}
+  area.value='BRAZOS_HISTORIAL_v1\n'+JSON.stringify(sessions);
+}
+function copyExport(){
+  const area=document.getElementById('export-area');
+  if(!area.value){showToast('No hay sesiones guardadas aún');return;}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(area.value).then(()=>showToast('✓ Copiado — pega en Notas de iPhone')).catch(()=>fallbackCopy(area));
+  }else fallbackCopy(area);
+}
+function fallbackCopy(area){
+  area.select();area.setSelectionRange(0,99999);
+  try{document.execCommand('copy');showToast('✓ Copiado — pega en Notas de iPhone');}
+  catch{showToast('Selecciona el texto y cópialo manualmente');}
+}
+function importSessions(){
+  const txt=document.getElementById('import-area').value.trim();
+  if(!txt){showToast('Pega el historial primero');return;}
+  try{
+    const lines=txt.split('\n');
+    if(lines[0]!=='BRAZOS_HISTORIAL_v1')throw new Error('Formato inválido');
+    const imported=JSON.parse(lines[1]);
+    const existingIds=new Set(sessions.map(s=>s.id));
+    const newSessions=imported.filter(s=>!existingIds.has(s.id));
+    sessions=[...sessions,...newSessions].sort((a,b)=>a.id-b.id);
+    document.getElementById('import-area').value='';
+    renderExport();
+    showToast('✓ '+newSessions.length+' sesión(es) importada(s)');
+  }catch{showToast('Error: formato no reconocido');}
+}
+
+function resetAll(){
+  if(!confirm('¿Reiniciar la rutina actual?'))return;
+  document.querySelectorAll('.serie-btn').forEach(b=>b.classList.remove('done','pop'));
+  document.querySelectorAll('.weight-select').forEach(s=>{s.value='';s.classList.remove('set');});
+  document.querySelectorAll('.rpe-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('session-notes').value='';
+  document.getElementById('rpe-desc').textContent='— selecciona —';
+  currentRPE=null;
+  for(let i=0;i<4;i++){blockDone[i]=0;updateBlock(i);}
+  updateGlobal();
+  document.getElementById('finish').classList.remove('visible');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>
